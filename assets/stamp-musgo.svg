@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+  <defs>
+    
+  </defs>
+  <circle cx="120" cy="120" r="118" fill="#3F4F2E"></circle>
+  <text x="120" y="148" class="mono" text-anchor="middle">gd</text>
+  <text x="120" y="200" class="label" text-anchor="middle">stand-up · comedy</text>
+  <text x="120" y="48" class="label" text-anchor="middle">— gus dorea —</text>
+</svg>
