@@ -410,7 +410,7 @@ body {
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ash);
+  color: var(--smoke);
 }
 
 .gf-show-d {
@@ -535,7 +535,7 @@ body {
 .gf-ext-sub {
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--ash);
+  color: var(--smoke);
   letter-spacing: 0.04em;
 }
 
