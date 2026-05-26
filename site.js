@@ -174,59 +174,100 @@
     );
   }
 
-  /* ── Render: Estado B (com shows + links) ── */
+  /* ── Render: Estado B (com shows e/ou links externos) ──
+     Regras:
+     - Tem shows  → badge "turnê", sociais COMPACTOS, seção shows visível
+     - Sem shows  → badge "sem show", sociais CHEIOS, seção shows oculta
+     - Links      → sempre visíveis se existirem
+  ── */
   function renderEstadoB(cfg, socials, shows, links) {
-    /* Sociais compactos */
-    var compactHtml = socials.map(function (s) {
-      return (
-        '<a href="' + esc(s.href) + '" class="gf-icon-btn" target="_blank" rel="noopener"' +
-          ' ' + gtrack('social_click', { social_name: s.label, estado: 'com_show' }) + '>' +
-          '<i class="ph ' + esc(s.icon) + '"></i>' +
-          '<span class="gf-icon-name">' + esc(s.label) + '</span>' +
-        '</a>'
-      );
-    }).join('');
+    var hasShows = shows.length > 0;
+    var estadoSocial = hasShows ? 'com_show' : 'sem_show';
 
-    /* Shows */
-    var showsHtml = shows.map(function (s) {
-      var fd = formatShowDate(s.date_iso);
-      return (
-        '<a href="' + esc(s.href || '#') + '" class="gf-show" target="_blank" rel="noopener"' +
-          ' ' + gtrack('show_click', { show_venue: s.venue, show_date: s.date_iso }) + '>' +
-          '<div class="gf-show-date">' +
-            '<div class="gf-show-wd">' + esc(fd.weekday) + '</div>' +
-            '<div class="gf-show-d">' + esc(fd.day) + '</div>' +
-            '<div class="gf-show-mo">' + esc(fd.month) + '</div>' +
-          '</div>' +
-          '<div class="gf-show-info">' +
-            '<div class="gf-show-venue">' + esc(s.venue) + '</div>' +
-            '<div class="gf-show-city">' + esc(s.city) + '</div>' +
-            '<div class="gf-show-time">' + esc(s.time) + '</div>' +
-          '</div>' +
-          '<div class="gf-show-cta">ingressos →</div>' +
-        '</a>'
-      );
-    }).join('');
+    /* Badge topo */
+    var badge = hasShows
+      ? '<span class="gf-tour">turnê ' + new Date().getFullYear() + '</span>'
+      : '<span class="gf-pill"><span class="dot"></span>sem show essa semana</span>';
 
-    /* Links externos */
-    var linksHtml = links.map(function (l) {
-      return (
-        '<a href="' + esc(l.href) + '" class="gf-ext" target="_blank" rel="noopener"' +
-          ' ' + gtrack('link_click', { link_label: l.label }) + '>' +
-          '<div class="gf-ext-icon"><i class="ph ph-link-simple"></i></div>' +
-          '<div class="gf-ext-body">' +
-            '<span class="gf-ext-label">' + esc(l.label) + '</span>' +
-            '<span class="gf-ext-sub">' + esc(l.sub) + '</span>' +
-          '</div>' +
-          '<span class="gf-ext-arr">↗</span>' +
-        '</a>'
-      );
-    }).join('');
+    /* Sociais: compactos se tem show, cheios se não tem */
+    var socialsHtml;
+    if (hasShows) {
+      socialsHtml = '<div class="gf-socials-compact">' +
+        socials.map(function (s) {
+          return (
+            '<a href="' + esc(s.href) + '" class="gf-icon-btn" target="_blank" rel="noopener"' +
+              ' ' + gtrack('social_click', { social_name: s.label, estado: estadoSocial }) + '>' +
+              '<i class="ph ' + esc(s.icon) + '"></i>' +
+              '<span class="gf-icon-name">' + esc(s.label) + '</span>' +
+            '</a>'
+          );
+        }).join('') +
+      '</div>';
+    } else {
+      socialsHtml = '<div class="gf-socials-full">' +
+        socials.map(function (s) {
+          return (
+            '<a href="' + esc(s.href) + '" class="gf-social-full" target="_blank" rel="noopener"' +
+              ' ' + gtrack('social_click', { social_name: s.label, estado: estadoSocial }) + '>' +
+              '<div class="gf-sf-icon"><i class="ph ' + esc(s.icon) + '"></i></div>' +
+              '<div class="gf-sf-meta">' +
+                '<span class="gf-sf-label">' + esc(s.label) + '</span>' +
+                '<span class="gf-sf-handle">' + esc(s.handle) + '</span>' +
+              '</div>' +
+              '<span class="gf-sf-arr">→</span>' +
+            '</a>'
+          );
+        }).join('') +
+      '</div>';
+    }
 
+    /* Seção shows — só renderiza se tiver shows */
+    var showsSection = hasShows
+      ? '<div class="gf-section">' +
+          '<div class="gf-sec-head"><span class="gf-sec-label">' + esc(cfg.titulo_shows) + '</span><div class="gf-sec-line"></div></div>' +
+          '<div class="gf-shows">' +
+            shows.map(function (s) {
+              var fd = formatShowDate(s.date_iso);
+              return (
+                '<a href="' + esc(s.href || '#') + '" class="gf-show" target="_blank" rel="noopener"' +
+                  ' ' + gtrack('show_click', { show_venue: s.venue, show_date: s.date_iso }) + '>' +
+                  '<div class="gf-show-date">' +
+                    '<div class="gf-show-wd">' + esc(fd.weekday) + '</div>' +
+                    '<div class="gf-show-d">' + esc(fd.day) + '</div>' +
+                    '<div class="gf-show-mo">' + esc(fd.month) + '</div>' +
+                  '</div>' +
+                  '<div class="gf-show-info">' +
+                    '<div class="gf-show-venue">' + esc(s.venue) + '</div>' +
+                    '<div class="gf-show-city">' + esc(s.city) + '</div>' +
+                    '<div class="gf-show-time">' + esc(s.time) + '</div>' +
+                  '</div>' +
+                  '<div class="gf-show-cta">ingressos →</div>' +
+                '</a>'
+              );
+            }).join('') +
+          '</div>' +
+        '</div>'
+      : '';
+
+    /* Seção links externos */
     var linksSection = links.length
       ? '<div class="gf-section">' +
           '<div class="gf-sec-head"><span class="gf-sec-label">' + esc(cfg.titulo_links) + '</span><div class="gf-sec-line"></div></div>' +
-          '<div class="gf-exts">' + linksHtml + '</div>' +
+          '<div class="gf-exts">' +
+            links.map(function (l) {
+              return (
+                '<a href="' + esc(l.href) + '" class="gf-ext" target="_blank" rel="noopener"' +
+                  ' ' + gtrack('link_click', { link_label: l.label }) + '>' +
+                  '<div class="gf-ext-icon"><i class="ph ph-link-simple"></i></div>' +
+                  '<div class="gf-ext-body">' +
+                    '<span class="gf-ext-label">' + esc(l.label) + '</span>' +
+                    '<span class="gf-ext-sub">' + esc(l.sub) + '</span>' +
+                  '</div>' +
+                  '<span class="gf-ext-arr">↗</span>' +
+                '</a>'
+              );
+            }).join('') +
+          '</div>' +
         '</div>'
       : '';
 
@@ -234,14 +275,11 @@
       '<div class="gf">' +
         '<div class="gf-top">' +
           '<span class="gf-mono">' + esc(cfg.domain) + '</span>' +
-          '<span class="gf-tour">turnê ' + new Date().getFullYear() + '</span>' +
+          badge +
         '</div>' +
         renderHero(cfg) +
-        '<div class="gf-socials-compact">' + compactHtml + '</div>' +
-        '<div class="gf-section">' +
-          '<div class="gf-sec-head"><span class="gf-sec-label">' + esc(cfg.titulo_shows) + '</span><div class="gf-sec-line"></div></div>' +
-          '<div class="gf-shows">' + showsHtml + '</div>' +
-        '</div>' +
+        socialsHtml +
+        showsSection +
         linksSection +
         renderFooter(cfg) +
       '</div>'
