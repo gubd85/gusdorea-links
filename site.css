@@ -439,6 +439,16 @@ body {
   line-height: 1.1;
 }
 
+.gf-show-address {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--smoke);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .gf-show-city {
   font-family: var(--font-body);
   font-size: 12px;

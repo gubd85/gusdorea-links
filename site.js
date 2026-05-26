@@ -239,10 +239,11 @@
                   '</div>' +
                   '<div class="gf-show-info">' +
                     '<div class="gf-show-venue">' + esc(s.venue) + '</div>' +
+                    (s.address ? '<div class="gf-show-address">' + esc(s.address) + '</div>' : '') +
                     '<div class="gf-show-city">' + esc(s.city) + '</div>' +
                     '<div class="gf-show-time">' + esc(s.time) + '</div>' +
                   '</div>' +
-                  '<div class="gf-show-cta">ingressos →</div>' +
+                  (s.href && s.href !== '#' ? '<div class="gf-show-cta">ingressos →</div>' : '') +
                 '</a>'
               );
             }).join('') +
