@@ -35,8 +35,30 @@
     return d.toISOString().slice(0, 10);
   }
 
-  function formatShowDate(dateISO) {
-    const d = new Date(dateISO + 'T12:00:00');
+  /* Converte qualquer formato de data (ISO, Date string do Sheets, etc.) */
+  function parseDate(val) {
+    if (!val) return null;
+    const s = String(val).trim();
+    // Já está em YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return new Date(s + 'T12:00:00');
+    // Google Sheets às vezes envia "Date(2026,5,13)" ou string completa
+    const match = s.match(/Date\((\d+),(\d+),(\d+)\)/);
+    if (match) return new Date(Number(match[1]), Number(match[2]), Number(match[3]), 12);
+    // Fallback: deixa o JS tentar
+    const d = new Date(s);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function dateToISO(d) {
+    if (!d) return '';
+    return d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+  }
+
+  function formatShowDate(dateVal) {
+    const d = parseDate(dateVal);
+    if (!d) return { weekday: '', day: '--', month: '---' };
     return {
       weekday: WEEKDAYS[d.getDay()],
       day:     String(d.getDate()).padStart(2, '0'),
@@ -245,7 +267,10 @@
     var cfg     = parseConfig(rawData.config);
     var socials = filterActive(rawData.socials && rawData.socials.length ? rawData.socials : FALLBACK_SOCIALS);
     var today   = todayISO();
-    var shows   = filterActive(rawData.shows).filter(function (s) { return s.date_iso >= today; });
+    var shows   = filterActive(rawData.shows).filter(function (s) {
+      var d = parseDate(s.date_iso);
+      return d && dateToISO(d) >= today;
+    });
     var links   = filterActive(rawData.links);
 
     var estadoKey = String(cfg.estado || 'auto').toLowerCase();
