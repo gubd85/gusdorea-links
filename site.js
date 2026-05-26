@@ -182,6 +182,7 @@
   ── */
   function renderEstadoB(cfg, socials, shows, links) {
     var hasShows = shows.length > 0;
+    var hasLinks = links.length > 0;
     var estadoSocial = hasShows ? 'com_show' : 'sem_show';
 
     /* Badge topo */
@@ -189,9 +190,9 @@
       ? '<span class="gf-tour">turnê ' + new Date().getFullYear() + '</span>'
       : '<span class="gf-pill"><span class="dot"></span>sem show essa semana</span>';
 
-    /* Sociais: compactos se tem show, cheios se não tem */
+    /* Sociais: compactos se tem show OU links, cheios só se não tem nada */
     var socialsHtml;
-    if (hasShows) {
+    if (hasShows || hasLinks) {
       socialsHtml = '<div class="gf-socials-compact">' +
         socials.map(function (s) {
           return (
