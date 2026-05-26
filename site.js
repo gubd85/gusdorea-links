@@ -274,7 +274,7 @@
     var links   = filterActive(rawData.links);
 
     var estadoKey = String(cfg.estado || 'auto').toLowerCase();
-    if (estadoKey === 'auto') estadoKey = shows.length > 0 ? 'b' : 'a';
+    if (estadoKey === 'auto') estadoKey = (shows.length > 0 || links.length > 0) ? 'b' : 'a';
 
     root.innerHTML = estadoKey === 'b'
       ? renderEstadoB(cfg, socials, shows, links)
