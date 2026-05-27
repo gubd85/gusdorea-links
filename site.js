@@ -243,6 +243,7 @@
                   '</div>' +
                   '<div class="gf-show-info">' +
                     '<div class="gf-show-venue">' + esc(s.venue) + '</div>' +
+                    (String(s.gratis) === 'true' ? '<span class="gf-show-gratis">grátis</span>' : '') +
                     (s.address ? '<div class="gf-show-address">' + esc(s.address) + '</div>' : '') +
                     '<div class="gf-show-city">' + esc(s.city) + '</div>' +
                     '<div class="gf-show-time">' + esc(s.time) + '</div>' +

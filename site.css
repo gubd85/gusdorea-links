@@ -413,6 +413,7 @@ div.gf-show {
 .gf-show-wd {
   font-family: var(--font-mono);
   font-size: 9px;
+  font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--smoke);
@@ -429,9 +430,24 @@ div.gf-show {
 .gf-show-mo {
   font-family: var(--font-mono);
   font-size: 9px;
+  font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--smoke);
+}
+
+.gf-show-gratis {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--musgo);
+  padding: 3px 8px;
+  border-radius: 100px;
+  margin-top: 4px;
 }
 
 .gf-show-info { min-width: 0; }
