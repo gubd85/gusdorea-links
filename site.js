@@ -229,9 +229,13 @@
           '<div class="gf-shows">' +
             shows.map(function (s) {
               var fd = formatShowDate(s.date_iso);
+              var hasLink = s.href && s.href !== '#';
+              var tag = hasLink ? 'a' : 'div';
+              var attrs = hasLink
+                ? ' href="' + esc(s.href) + '" target="_blank" rel="noopener" ' + gtrack('show_click', { show_venue: s.venue, show_date: s.date_iso })
+                : '';
               return (
-                '<a href="' + esc(s.href || '#') + '" class="gf-show" target="_blank" rel="noopener"' +
-                  ' ' + gtrack('show_click', { show_venue: s.venue, show_date: s.date_iso }) + '>' +
+                '<' + tag + ' class="gf-show"' + attrs + '>' +
                   '<div class="gf-show-date">' +
                     '<div class="gf-show-wd">' + esc(fd.weekday) + '</div>' +
                     '<div class="gf-show-d">' + esc(fd.day) + '</div>' +
@@ -243,8 +247,8 @@
                     '<div class="gf-show-city">' + esc(s.city) + '</div>' +
                     '<div class="gf-show-time">' + esc(s.time) + '</div>' +
                   '</div>' +
-                  (s.href && s.href !== '#' ? '<div class="gf-show-cta">ingressos →</div>' : '') +
-                '</a>'
+                  (hasLink ? '<div class="gf-show-cta">ingressos →</div>' : '') +
+                '</' + tag + '>'
               );
             }).join('') +
           '</div>' +
