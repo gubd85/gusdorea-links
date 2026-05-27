@@ -393,10 +393,15 @@ body {
 .gf-show:nth-child(4) { animation-delay: 440ms; }
 .gf-show:nth-child(5) { animation-delay: 520ms; }
 
-.gf-show:hover {
+a.gf-show:hover {
   transform: translateY(-1px);
   border-color: var(--musgo);
   box-shadow: 0 6px 20px -10px rgba(63,79,46,.4);
+  cursor: pointer;
+}
+
+div.gf-show {
+  cursor: default;
 }
 
 .gf-show-date {
@@ -477,7 +482,7 @@ body {
   transition: gap 180ms ease;
 }
 
-.gf-show:hover .gf-show-cta { gap: 8px; }
+a.gf-show:hover .gf-show-cta { gap: 8px; }
 
 /* ── External Link Cards ── */
 .gf-exts {
