@@ -444,9 +444,7 @@ body {
   font-size: 12px;
   color: var(--smoke);
   margin-top: 3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.4;
 }
 
 .gf-show-city {
