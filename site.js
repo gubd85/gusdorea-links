@@ -16,6 +16,7 @@
     foto_url: 'assets/photos/gus-portrait-smile.jpg',
     rodape:  'feito com paciência',
     titulo_shows: 'shows',
+    titulo_roles: 'roles',
     titulo_links: 'links',
     estado:  'auto',
   };
@@ -180,8 +181,9 @@
      - Sem shows  → badge "sem show", sociais CHEIOS, seção shows oculta
      - Links      → sempre visíveis se existirem
   ── */
-  function renderEstadoB(cfg, socials, shows, links) {
+  function renderEstadoB(cfg, socials, shows, roles, links) {
     var hasShows = shows.length > 0;
+    var hasRoles = roles.length > 0;
     var hasLinks = links.length > 0;
     var estadoSocial = hasShows ? 'com_show' : 'sem_show';
 
@@ -190,9 +192,9 @@
       ? '<span class="gf-tour">turnê ' + new Date().getFullYear() + '</span>'
       : '<span class="gf-pill"><span class="dot"></span>sem show essa semana</span>';
 
-    /* Sociais: compactos se tem show OU links, cheios só se não tem nada */
+    /* Sociais: compactos se tem show, roles ou links; cheios só se não tem nada */
     var socialsHtml;
-    if (hasShows || hasLinks) {
+    if (hasShows || hasRoles || hasLinks) {
       socialsHtml = '<div class="gf-socials-compact">' +
         socials.map(function (s) {
           return (
@@ -256,6 +258,40 @@
         '</div>'
       : '';
 
+    /* Seção roles — só renderiza se tiver roles */
+    var rolesSection = hasRoles
+      ? '<div class="gf-section">' +
+          '<div class="gf-sec-head"><span class="gf-sec-label">' + esc(cfg.titulo_roles) + '</span><div class="gf-sec-line"></div></div>' +
+          '<div class="gf-shows">' +
+            roles.map(function (s) {
+              var fd = formatShowDate(s.date_iso);
+              var hasLink = s.href && s.href !== '#';
+              var tag = hasLink ? 'a' : 'div';
+              var attrs = hasLink
+                ? ' href="' + esc(s.href) + '" target="_blank" rel="noopener" ' + gtrack('role_click', { role_venue: s.venue, role_date: s.date_iso })
+                : '';
+              return (
+                '<' + tag + ' class="gf-show"' + attrs + '>' +
+                  '<div class="gf-show-date">' +
+                    '<div class="gf-show-wd">' + esc(fd.weekday) + '</div>' +
+                    '<div class="gf-show-d">' + esc(fd.day) + '</div>' +
+                    '<div class="gf-show-mo">' + esc(fd.month) + '</div>' +
+                  '</div>' +
+                  '<div class="gf-show-info">' +
+                    '<div class="gf-show-venue">' + esc(s.venue) + '</div>' +
+                    (String(s.gratis) === 'true' ? '<span class="gf-show-gratis">grátis</span>' : '') +
+                    (s.address ? '<div class="gf-show-address">' + esc(s.address) + '</div>' : '') +
+                    '<div class="gf-show-city">' + esc(s.city) + '</div>' +
+                    '<div class="gf-show-time">' + esc(s.time) + '</div>' +
+                  '</div>' +
+                  (hasLink ? '<div class="gf-show-cta">ver →</div>' : '') +
+                '</' + tag + '>'
+              );
+            }).join('') +
+          '</div>' +
+        '</div>'
+      : '';
+
     /* Seção links externos */
     var linksSection = links.length
       ? '<div class="gf-section">' +
@@ -287,6 +323,7 @@
         renderHero(cfg) +
         socialsHtml +
         showsSection +
+        rolesSection +
         linksSection +
         renderFooter(cfg) +
       '</div>'
@@ -316,18 +353,23 @@
       var d = parseDate(s.date_iso);
       return d && dateToISO(d) >= today;
     });
+    var roles   = filterActive(rawData.roles).filter(function (s) {
+      var d = parseDate(s.date_iso);
+      return d && dateToISO(d) >= today;
+    });
     var links   = filterActive(rawData.links);
 
     var estadoKey = String(cfg.estado || 'auto').toLowerCase();
-    if (estadoKey === 'auto') estadoKey = (shows.length > 0 || links.length > 0) ? 'b' : 'a';
+    if (estadoKey === 'auto') estadoKey = (shows.length > 0 || roles.length > 0 || links.length > 0) ? 'b' : 'a';
 
     root.innerHTML = estadoKey === 'b'
-      ? renderEstadoB(cfg, socials, shows, links)
+      ? renderEstadoB(cfg, socials, shows, roles, links)
       : renderEstadoA(cfg, socials);
 
     track('gus_page_view', {
       estado:      estadoKey === 'b' ? 'com_show' : 'sem_show',
       shows_count: shows.length,
+      roles_count: roles.length,
     });
 
     attachTracking();
@@ -337,7 +379,7 @@
 
   if (!scriptUrl || scriptUrl.indexOf('REPLACE') > -1) {
     /* Sem configuração: renderiza fallback com sociais padrão */
-    run({ config: [], socials: FALLBACK_SOCIALS, shows: [], links: [] });
+    run({ config: [], socials: FALLBACK_SOCIALS, shows: [], roles: [], links: [] });
     return;
   }
 
@@ -345,6 +387,6 @@
     .then(run)
     .catch(function (err) {
       console.warn('[Gus Linktree] Erro ao carregar dados, usando fallback:', err);
-      run({ config: [], socials: FALLBACK_SOCIALS, shows: [], links: [] });
+      run({ config: [], socials: FALLBACK_SOCIALS, shows: [], roles: [], links: [] });
     });
 })();
